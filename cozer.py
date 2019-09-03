@@ -69,6 +69,15 @@ def misturar(recipiente, como, ate, ingrediente):
 
 @cli.command()
 @opcoes_comuns
+@click.argument('ingrediente', nargs=-1, required=True)
+def cortar(recipiente, como, ate, ingrediente):
+    """Cortar ingredientes."""
+
+    click.echo(texto_comum('cortar', recipiente, como, ate, ingrediente))
+
+
+@cli.command()
+@opcoes_comuns
 @click.option('-t','--tirando-de', 'recipiente_anterior',metavar='<RECIPIENTE_ANTERIOR>', help='nome do recipiente de onde será tirado o conteúdo. Utilizado quando deseja-se trocar de recipiente. Ex: --tirando-de panela')
 @click.argument('ingrediente', nargs=-1)
 def colocar(recipiente, como, ate, recipiente_anterior, ingrediente):
@@ -87,7 +96,7 @@ def colocar(recipiente, como, ate, recipiente_anterior, ingrediente):
 
 @cli.command()
 @opcoes_comuns
-@click.argument('ingrediente', nargs=-1)
+@click.argument('ingrediente', nargs=-1, required=True)
 def adicionar(recipiente, como, ate, ingrediente):
     """
     Adicionar ingredientes em recipientes.
@@ -121,10 +130,31 @@ def bater(recipiente, como, ate, ingrediente):
 
     click.echo(texto_comum('bater', recipiente, como, ate, ingrediente))
 
+@cli.command(epilog="<duracao> número indicando o tempo de duração. Ex: 20min, 1.5h")
+@opcoes_comuns
+@click.option('--por', 'duracao', metavar='<duracao>', type=(DuracaoType()), help='Tempo de duração no fogão. Ex: --por 5min')
+@click.option('-a','--aonde', 'aonde',metavar='<aonde>', help='Local aonde o recipiente ficará guardado. Ex: --aonde geladeira')
+@click.argument('ingrediente', nargs=-1)
+def reservar(recipiente, como, ate, duracao, aonde, ingrediente):
+    """
+    Reservar ingredientes em recipientes. Reservar equivale a deixar guardado para utilizar depois.
+
+    INGREDIENTE: ingrediente que será utilizado.
+
+    Exemplos:
+
+        cozer reservar -r prato --por 24h --aonde geladeira mistura
+
+    """
+
+    click.echo(texto_completo('reservar', recipiente, como, ate, ingrediente, None, duracao, ("Aonde", aonde)))
+
+
 @cli.command()
 @opcoes_comuns
+@click.option('-a','--acompanhamento', 'acompanhamento',metavar='<ACOMPANHAMENTO>', help='acompanhamento a servir junto. Ex: --acompanhamento "arroz e fritas"')
 @click.argument('ingrediente', nargs=-1)
-def servir(recipiente, como, ate, ingrediente):
+def servir(recipiente, como, ate, ingrediente, acompanhamento):
     """
     Servir ingredientes em recipientes.
 
@@ -132,10 +162,10 @@ def servir(recipiente, como, ate, ingrediente):
 
     Exemplos:
 
-        cozer servir -r copinhos --como "ainda gelado" gelatina
+        cozer servir -r bandeija --como "ainda quente" peixe
     """
 
-    click.echo(texto_comum('servir', recipiente, como, ate, ingrediente))
+    click.echo(texto_completo('servir', recipiente, como, ate, ingrediente, None, None, ("Acompanhamento", acompanhamento)))
 
 
 def texto_comum(operacao,recipiente, como, ate, ingrediente):
