@@ -1,4 +1,6 @@
 import click
+import functools
+from click_didyoumean import DYMGroup
 
 
 CONTEXT_SETTINGS = dict(
@@ -33,14 +35,19 @@ class DuracaoType(click.ParamType):
             self.fail("{0} não é uma duração válida".format(value), param, ctx)
 
 
+def opcoes_comuns(func):
+    @click.option('-r','--recipiente','recipiente',metavar='<recipiente>', help='nome do recipiente que será utilizado. Ex: -r panela', envvar="RECIPIENTE", show_envvar=True, required=True)
+    @click.option('--como', 'como', metavar='<descricao>', help='descrição de como deve ser realizado a operação, ex: --como "com cuidado para não quebrar"')
+    @click.option('--ate', 'ate', metavar='<acontecimento>', help='condição para terminar a operação, ex: --ate "ficar uniforme"')
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
 
 
-@click.group(context_settings=CONTEXT_SETTINGS)
-@click.option('-r','--recipiente','recipiente',metavar='<recipiente>', help='nome do recipiente que será utilizado. Ex: -r panela', envvar="RECIPIENTE", show_envvar=True)
-@click.option('--como', 'como', metavar='<descricao>', help='descrição de como deve ser realizado a operação, ex: --como "com cuidado para não quebrar"')
-@click.option('--ate', 'ate', metavar='<acontecimento>', help='condição para terminar a operação, ex: --ate "ficar uniforme"')
-@click.pass_context
-def cli(ctx, recipiente, como, ate):
+
+@click.group(cls=DYMGroup, context_settings=CONTEXT_SETTINGS)
+def cli():
     """
     Script para auxiliar o aprendizado de leitura de documentação e invocação de comandos.
 
@@ -49,130 +56,133 @@ def cli(ctx, recipiente, como, ate):
     Os comandos assumem que as operações são realizadas em recipientes, ex: "Panela" ou "Frigideira".
 
     """
-
-    ctx.ensure_object(dict)
-
-    ctx.obj['recipiente'] = recipiente
-    ctx.obj['como'] = como
-    ctx.obj['ate'] = ate
+    pass
 
 
 @cli.command()
-@click.option('-u','--utencilio', metavar='<utencilio>', help='utencilio para utilizar ao misturar, ex: -u "colher de pau"')
+@opcoes_comuns
 @click.argument('ingrediente', nargs=-1)
-@click.pass_context
-def misturar(ctx, utencilio, ingrediente):
+def misturar(recipiente, como, ate, ingrediente):
     """Mistura ingredientes."""
-    click.echo('. Misturar em usando ')
+
+    click.echo(texto_comum('misturar', recipiente, como, ate, ingrediente))
 
 @cli.command()
+@opcoes_comuns
 @click.option('-t','--tirando-de', 'recipiente_anterior',metavar='<RECIPIENTE_ANTERIOR>', help='nome do recipiente de onde será tirado o conteúdo. Utilizado quando deseja-se trocar de recipiente. Ex: --tirando-de panela')
 @click.argument('ingrediente', nargs=-1)
-@click.pass_context
-def colocar(ctx, recipiente_anterior, ingrediente):
+def colocar(recipiente, como, ate, recipiente_anterior, ingrediente):
     """
     Colocar ingredientes ou trocar de recipiente.
 
     Pode ser utilizado trocar recipientes, tirando de um colocando em outro.
     """
-
-    recipiente = ctx.obj['recipiente']
-    como = ctx.obj['como']
-    ate = ctx.obj['ate']
-
-    ingredientes = ", ".join(ingrediente)
-    como_msg = "" if (como is None) else ("{}".format(como))
-    ate_msg = "" if (ate is None) else ("até {}".format(ate))
-
     if recipiente_anterior:
-
-        """
-        Retirando ingredientes de recipiente
-        """
-        click.echo('. Retirar %s do(a) %s e colocar no(a) %s %s %s' % (
-            ingredientes,
-            recipiente_anterior,
-            recipiente,
-            como_msg,
-            ate_msg))
+        retirar = texto_comum('retirar', recipiente_anterior, como, ate, ingrediente)
+        colocar = texto_comum('colocar', recipiente, None, None, None)
+        click.echo(retirar + colocar[1:len(colocar)])
     else:
-        click.echo('. Colocar %s no(a) %s %s %s' % (
-            ingredientes,
-            recipiente,
-            como_msg,
-            ate_msg))
+        click.echo(texto_comum('colocar', recipiente, como, ate, ingrediente))
 
 
 @cli.command()
+@opcoes_comuns
 @click.argument('ingrediente', nargs=-1)
-@click.pass_context
-def adicionar(ctx, ingrediente):
-    """Adicionar ingredientes em recipientes."""
+def adicionar(recipiente, como, ate, ingrediente):
+    """
+    Adicionar ingredientes em recipientes.
 
-    recipiente = ctx.obj['recipiente']
-    como = ctx.obj['como']
-    ate = ctx.obj['ate']
+    INGREDIENTE: ingrediente que será utilizado.
 
-    ingredientes = ", ".join(ingrediente)
-    como_msg = "" if (como is None) else ("{}".format(como))
-    ate_msg = "" if (ate is None) else ("até {}".format(ate))
+    Exemplos:
 
-    operacao = "adicionar"
+        cozer adicionar -r panela sal pimenta
 
-    click.echo('. %s %s no(a) %s %s %s' % (
-        operacao.capitalize(),
-        ingredientes,
-        recipiente,
-        como_msg,
-        ate_msg))
+        cozer adicionar -r bacia tudo
+    """
+
+    click.echo(texto_comum('adicionar', recipiente, como, ate, ingrediente))
+
+@cli.command()
+@opcoes_comuns
+@click.argument('ingrediente', nargs=-1)
+def bater(recipiente, como, ate, ingrediente):
+    """
+    Bater ingredientes em recipientes.
+
+    INGREDIENTE: ingrediente que será utilizado.
+
+    Exemplos:
+
+        cozer bater -r liquidificador --ate "ficar uniforme" mistura
+
+        cozer bater -r bacia --como "sempre para o mesmo lado" ovos
+    """
+
+    click.echo(texto_comum('bater', recipiente, como, ate, ingrediente))
+
+@cli.command()
+@opcoes_comuns
+@click.argument('ingrediente', nargs=-1)
+def servir(recipiente, como, ate, ingrediente):
+    """
+    Servir ingredientes em recipientes.
+
+    INGREDIENTE: ingrediente que será utilizado.
+
+    Exemplos:
+
+        cozer servir -r copinhos --como "ainda gelado" gelatina
+    """
+
+    click.echo(texto_comum('servir', recipiente, como, ate, ingrediente))
 
 
-@cli.command(epilog="<duracao> número indicando o tempo de duração. Ex: 20m, 1.5h")
-@click.option('-i','--intensidade', metavar='<intensidade>',  type=click.Choice(['baixo', 'medio', 'alto']), help='Nível de intensidade do fogo.', envvar="INTENSIDADE", show_envvar=True,  show_default=True, default="medio")
+def texto_comum(operacao,recipiente, como, ate, ingrediente):
+    return texto_completo(operacao,recipiente, como, ate, ingrediente, None, None)
+
+def texto_completo(operacao,recipiente, como, ate, ingrediente, local, duracao, *args):
+    if ingrediente == () or ingrediente is None:
+        ingredientes = ""
+    else:
+        ingredientes = ", ".join(map(str,ingrediente))
+    operacao_msg = "{}.".format(operacao.capitalize()) if (ingredientes=="") else ("{} {}.".format(operacao.capitalize(), ingredientes))
+    if recipiente is None:
+        recipiente_msg = ""
+    elif (local is None):
+         recipiente_msg = "[{}] ".format(recipiente)
+    else:
+        recipiente_msg = "[{}>{}] ".format(local, recipiente)
+
+    como_msg = "" if (como is None) else (" Como({}).".format(como))
+    ate_msg = "" if (ate is None) else (" Até({}).".format(ate))
+    duracao_msg = "" if (duracao is None) else (" Por({} {}).".format(duracao[0], duracao[1]))
+    local_msg = "" if (local is None) else ("[{}] ".format(local))
+    final_msg = ""
+
+    for indicador in args:
+        if indicador[1] is True:
+            final_msg += " {}.".format(indicador[0])
+        elif indicador[1] is not None and indicador[1] is not False:
+            final_msg += " {}({}).".format(indicador[0], indicador[1])
+    return '%s%s%s%s%s%s' % ( recipiente_msg, operacao_msg, como_msg, duracao_msg, ate_msg, final_msg)
+
+
+OPERACORES = ['esquentar', 'assar', 'fritar', 'cozinhar', 'refogar', 'derreter', 'dissolver', 'desligar']
+
+@cli.command(epilog="<duracao> número indicando o tempo de duração. Ex: 20min, 1.5h")
+@click.argument('operacao', type=click.Choice(OPERACORES), required=True)
+@opcoes_comuns
+@click.option('-i','--intensidade', metavar='<intensidade>',  type=click.Choice(['baixo', 'medio', 'alto']), help='Nível de intensidade do fogo.', envvar="INTENSIDADE", show_envvar=True)
 @click.option('--fogo', 'fogo', flag_value='fogo', default=True, help="Utilizar o fogo (bocas de cima).")
 @click.option('--forno', 'fogo', flag_value='forno', help="Utilizar o forno.")
-@click.option('--por', 'duracao', metavar='<duracao>', type=(DuracaoType()), help='Tempo de duração no fogão. Ex: --por 5m')
+@click.option('--por', 'duracao', metavar='<duracao>', type=(DuracaoType()), help='Tempo de duração no fogão. Ex: --por 5min')
 @click.option('--preaquecido', is_flag=True, help='indica que o forno deve ser pré-aquecido')
-@click.option('--esquentar', 'operacao', flag_value='esquentar', help='Indica que devemos fritar os ingredientes.')
-@click.option('--fritar', 'operacao', flag_value='fritar', help='Indica que devemos fritar os ingredientes.')
-@click.option('--cozinhar', 'operacao', flag_value='cozinhar', help='Indica que devemos cozinhar os ingredientes.')
-@click.option('--refogar', 'operacao', flag_value='refogar', help='Indica que devemos refogar os ingredientes.')
-@click.option('-d', '--desligar', is_flag=True, help='Indica que a chama deve ser desligada depois.')
 @click.argument('ingrediente', nargs=-1)
-@click.pass_context
-def fogao(ctx, intensidade, fogo, duracao, preaquecido, operacao, desligar, ingrediente):
+def fogao(operacao, recipiente, como, ate, intensidade, fogo, duracao, preaquecido, ingrediente):
     """
     Utiliza o fogão para aquecer os alimentos.
     """
-    recipiente = ctx.obj['recipiente']
-    como = ctx.obj['como']
-    ate = ctx.obj['ate']
 
-    if operacao is None:
-        if desligar:
-            click.echo('. Desligar o %s do(a) %s' % (fogo, recipiente ))
-        else:
-            raise click.BadParameter('Operação no fogão não foi definida. Utilize -h para ajuda.')
-    else:
-
-        if preaquecido and fogo == 'forno':
-            click.echo('. Preaquecer o forno' )
-
-        como_msg = "" if (como is None) else ("{}".format(como))
-        por_msg = "" if (duracao is None) else ("por {0[0]} {0[1]}".format(duracao))
-        ate_msg = "" if (ate is None) else ("até {}".format(ate))
-        msg = " ".join([por_msg, ate_msg])
-        ingredientes = ",".join(ingrediente)
-
-
-        click.echo('. Usando %s e o %s %s, %s %s, %s %s' % (
-            recipiente,
-            fogo,
-            intensidade,
-            operacao,
-            ingredientes,
-            como_msg,
-            msg))
-
-        if desligar:
-            click.echo('. Desligar o %s do(a) %s em seguida.' % (fogo, recipiente) )
+    local = "Fogão>{}".format(fogo)
+    click.echo(texto_completo(operacao,recipiente, como, ate, ingrediente, local, duracao, ('Fogo',intensidade), ('Pré-aquecido',preaquecido)))

@@ -5,7 +5,7 @@ setup(
     version='0.1',
     py_modules=['cozer'],
     install_requires=[
-        'Click',
+        'Click','click_didyoumean'
     ],
     entry_points='''
         [console_scripts]
