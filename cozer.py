@@ -211,7 +211,7 @@ OPERACORES = ['esquentar', 'assar', 'fritar', 'cozinhar', 'refogar', 'derreter',
 @click.argument('ingrediente', nargs=-1)
 def fogao(operacao, recipiente, como, ate, intensidade, fogo, duracao, preaquecido, ingrediente):
     """
-    Utiliza o fogão para aquecer os alimentos.
+    Utiliza o fogão para preparar os alimentos.
     """
 
     local = "Fogão>{}".format(fogo)
