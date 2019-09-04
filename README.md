@@ -15,17 +15,7 @@ Sistema para auxiliar ensino de conceitos de informática
 
 Utilize essas instruções para testar a aplicação em diretório temporário
 
-<<<<<<< HEAD
 ```bash
-aula=$(mktemp -d -t aula-XXXXXXXX)
-cd $aula
-git clone https://github.com/edusantana/cozer
-cd cozer
-python3 -m venv venv
-. venv/bin/activate
-pip install --editable .
-=======
-```
 aula=$(mktemp -d -t aula-XXXXXXXX)
 cd $aula
 python3 -m venv venv
