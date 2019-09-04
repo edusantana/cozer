@@ -37,22 +37,20 @@ pip3 install cozer --user
 
 ```
 pip3 install cozer
->>>>>>> modulo
 ```
 
 ### Autocomplete
 
 Para agilizar utilização do cozer com o recurso de auto-completar adicionar a `.bashrc` ou executar:
 
-        eval "$(_COZER_COMPLETE=source cozer)"
+```
+eval "$(_COZER_COMPLETE=source cozer)"
+```
 
 ## Testando instalação:
 
-        cozer --version
-        cozer --help
-        cozer fogao -h
-
-## Desfazendo instalação
-
-        deactivate
-        cd .. && rm -rf cozer
+```
+cozer --version
+cozer --help
+cozer fogao -h
+```
