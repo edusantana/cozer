@@ -24,8 +24,14 @@ $ . venv/bin/activate
 $ pip install --editable .
 ```
 
-## Autocomplete
+### Autocomplete
 
 Adicionar a `.bashrc` ou executar:
 
         eval "$(_COZER_COMPLETE=source cozer)"
+
+## Testando instalação:
+
+        cozer --version
+        cozer --help
+        cozer fogao -h
