@@ -1,7 +1,3 @@
-# coding: utf-8
-
-#from __future__ import unicode_literals    # at top of module
-
 import click
 import functools
 from click_didyoumean import DYMGroup
@@ -62,6 +58,32 @@ def cli():
 
     """
     pass
+
+
+@cli.command()
+@click.option('-t','--titulo', metavar='<titulo>', help='Titulo da receita', required=True)
+@click.option('-l','--link', metavar='<link>', help='Link da receita')
+@click.option('-a','--autor', metavar='<nome>', help='Autor(a) do programa da receita')
+@click.option('-c','--comentario', metavar='<comentario>', help='Comentario sobre o programa ou receita')
+def receita(titulo, link, autor, comentario):
+    """
+    Indica que uma nova receita está sendo escrita.
+
+    Deve ser utilizado no início da escrita de uma receita,
+    pois imprime as informações sobre ela.
+    """
+
+    click.echo("Receita: " + click.style(titulo, fg='green'))
+
+    if comentario:
+        click.echo(comentario)
+
+    if link:
+        click.echo("Receita original disponível em: {}".format(link))
+
+    if autor:
+        click.echo("Autor(a) do código: {}".format(autor))
+
 
 
 @cli.command()
