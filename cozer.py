@@ -1,3 +1,5 @@
+from __future__ import unicode_literals    # at top of module
+
 import click
 import functools
 from click_didyoumean import DYMGroup
