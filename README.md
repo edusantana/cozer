@@ -17,13 +17,26 @@ Atualização documentação:
 - https://click.palletsprojects.com/en/7.x/setuptools/#introduction
 
 ```
-$ virtualenv venv
+$ git clone https://github.com/edusantana/cozer
+$ cd cozer
+$ python3 -m venv venv
 $ . venv/bin/activate
 $ pip install --editable .
 ```
 
-## Autocomplete
+### Autocomplete
 
-Adicionar a `.bashrs`:
+Adicionar a `.bashrc` ou executar:
 
         eval "$(_COZER_COMPLETE=source cozer)"
+
+## Testando instalação:
+
+        cozer --version
+        cozer --help
+        cozer fogao -h
+
+## Desfazendo instalação
+
+        deactivate
+        cd .. && rm -rf cozer
