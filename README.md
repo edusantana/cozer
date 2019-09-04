@@ -35,3 +35,8 @@ Adicionar a `.bashrc` ou executar:
         cozer --version
         cozer --help
         cozer fogao -h
+
+## Desfazendo instalação
+
+        deactivate
+        cd .. && rm -rf cozer
