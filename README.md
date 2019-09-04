@@ -17,11 +17,13 @@ Atualização documentação:
 - https://click.palletsprojects.com/en/7.x/setuptools/#introduction
 
 ```
-$ git clone https://github.com/edusantana/cozer
-$ cd cozer
-$ python3 -m venv venv
-$ . venv/bin/activate
-$ pip install --editable .
+aula=$(mktemp -d -t aula-XXXXXXXX)
+cd $aula
+git clone https://github.com/edusantana/cozer
+cd cozer
+python3 -m venv venv
+. venv/bin/activate
+pip install --editable .
 ```
 
 ### Autocomplete
