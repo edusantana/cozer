@@ -47,6 +47,7 @@ def opcoes_comuns(func):
 
 
 @click.group(cls=DYMGroup, context_settings=CONTEXT_SETTINGS)
+@click.version_option()
 def cli():
     """
     Script para auxiliar o aprendizado de leitura de documentação e invocação de comandos.
