@@ -9,26 +9,39 @@ Sistema para auxiliar ensino de conceitos de informática
 - [https://guiadacozinha.com.br/bolo-de-rolo-receita/](https://guiadacozinha.com.br/bolo-de-rolo-receita/)
 - [https://guiadacozinha.com.br/canjica-leite-condensado-cozido/](https://guiadacozinha.com.br/canjica-leite-condensado-cozido/)
 
-## Instalar
+# Instalação
 
-Atualização documentação:
+## Instalação temporária
 
-- https://packaging.python.org/tutorials/packaging-projects/
-- https://click.palletsprojects.com/en/7.x/setuptools/#introduction
+Utilize essas instruções para testar a aplicação em diretório temporário
 
 ```
 aula=$(mktemp -d -t aula-XXXXXXXX)
 cd $aula
-git clone https://github.com/edusantana/cozer
-cd cozer
 python3 -m venv venv
 . venv/bin/activate
-pip install --editable .
+pip install cozer
+# Ativando auto-completar:
+eval "$(_COZER_COMPLETE=source cozer)"
+```
+
+## Outros métodos de instalação
+
+- Instalação para o usuário:
+
+```
+pip3 install cozer --user
+```
+
+- Instalação global:
+
+```
+pip3 install cozer
 ```
 
 ### Autocomplete
 
-Adicionar a `.bashrc` ou executar:
+Para agilizar utilização do cozer com o recurso de auto-completar adicionar a `.bashrc` ou executar:
 
         eval "$(_COZER_COMPLETE=source cozer)"
 
