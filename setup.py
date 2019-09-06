@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='cozer',
-    version='0.2',
+    version='0.3',
     author="Eduardo de Santana Medeiros Alexandre",
     author_email="eduardo.ufpb@gmail.com",
     description="Um pequeno script para ensinar sobre como invocar comandos no terminal",
