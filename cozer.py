@@ -116,7 +116,8 @@ def colocar(recipiente, como, ate, recipiente_anterior, ingrediente):
     if recipiente_anterior:
         retirar = texto_comum('retirar', recipiente_anterior, como, ate, ingrediente)
         colocar = texto_comum('colocar', recipiente, None, None, None)
-        click.echo(retirar + colocar[1:len(colocar)])
+        click.echo(retirar)
+        click.echo(colocar)
     else:
         click.echo(texto_comum('colocar', recipiente, como, ate, ingrediente))
 
