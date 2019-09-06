@@ -85,7 +85,20 @@ def receita(titulo, link, autor, comentario):
     if autor:
         click.echo("Autor(a) do código: {}".format(autor))
 
+COMANDOS_GERAIS = ["cut"]
 
+FUNC_TEMPLATE = """
+@cli.command()
+@opcoes_comuns
+def {0}(ingrediente, nargs=-1):
+    \"\"\"
+    Utilizado para {0} ingredientes em recipientes.
+    \"\"\"
+    click.echo(texto_comum('{0}', recipiente, como, ate, ingrediente))
+"""
+
+for comando in COMANDOS_GERAIS:
+    exec(FUNC_TEMPLATE.format(comando))
 
 @cli.command()
 @opcoes_comuns
@@ -195,7 +208,7 @@ def servir(recipiente, como, ate, ingrediente, acompanhamento):
     """
 
     click.echo(texto_completo('servir', recipiente, como, ate, ingrediente, None, None, ("Acompanhamento", acompanhamento)))
-    
+
 
 @cli.command()
 @opcoes_comuns
@@ -203,11 +216,11 @@ def servir(recipiente, como, ate, ingrediente, acompanhamento):
 @click.argument('ingrediente', nargs=-1)
 def mexer(recipiente, como, ate, ingrediente, duracao):
     """
-    Mexer ingredientes em um recipiente
-    
+    Mexer ingredientes em um recipiente.
+
     Exemplos:
 
-        cozer mexer -r panela --por 5min "leite condensado" coco 
+        cozer mexer -r panela --por 5min "leite condensado" coco
     """
     click.echo(texto_completo('mexer', recipiente, como, ate, ingrediente, duracao, None))
 
