@@ -57,7 +57,7 @@ cozer fogao -h
 
 # Desenvolvimento
 
-Para desenvolvimento utilize da seguinte forma:
+Se você deseja incluir novas funcionalidas na aplicação, utilize da seguinte forma:
 
 ```
 git clone https://github.com/edusantana/cozer
@@ -65,4 +65,11 @@ cd cozer
 virtualenv venv
 . venv/bin/activate
 pip install --editable .
+```
+
+Para depurar incluir no local do debug:
+
+```
+import pdb
+pdb.set_trace()
 ```
