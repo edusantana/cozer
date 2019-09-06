@@ -1,6 +1,7 @@
 import click
 import functools
 from click_didyoumean import DYMGroup
+import pdb
 
 
 CONTEXT_SETTINGS = dict(
@@ -194,6 +195,22 @@ def servir(recipiente, como, ate, ingrediente, acompanhamento):
     """
 
     click.echo(texto_completo('servir', recipiente, como, ate, ingrediente, None, None, ("Acompanhamento", acompanhamento)))
+    
+
+@cli.command()
+@opcoes_comuns
+@click.option('--por', 'duracao', metavar='<duracao>', type=(DuracaoType()), help='Tempo de duração mexendo. Ex: --por 5min')
+@click.argument('ingrediente', nargs=-1)
+def mexer(recipiente, como, ate, ingrediente, duracao):
+    """
+    Mexer ingredientes em um recipiente
+    
+    Exemplos:
+
+        cozer mexer -r panela --por 5min "leite condensado" coco 
+    """
+    click.echo(texto_completo('mexer', recipiente, como, ate, ingrediente, duracao, None))
+
 
 
 def texto_comum(operacao,recipiente, como, ate, ingrediente):
