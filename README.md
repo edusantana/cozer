@@ -54,3 +54,15 @@ cozer --version
 cozer --help
 cozer fogao -h
 ```
+
+# Desenvolvimento
+
+Para desenvolvimento utilize da seguinte forma:
+
+```
+git clone https://github.com/edusantana/cozer
+cd cozer
+virtualenv venv
+. venv/bin/activate
+pip install --editable .
+```
